@@ -1,2 +1,2 @@
-# deblur-devil
-Deep video deblurring: The devil is in the detail
+# Deep Video Deblurring: The Devil is in the Details
+coming soon..
