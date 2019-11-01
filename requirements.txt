@@ -1,0 +1,9 @@
+PIL
+numpy
+colorama
+matplotlib
+pytz
+scipy
+tensorboard
+torch
+torchvision

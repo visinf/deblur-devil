@@ -1,0 +1,8 @@
+@inproceedings{Gast:2019:DVD,
+    Address = {Seoul, Korea},
+    Author = {Jochen Gast and Stefan Roth},
+    Booktitle = {ICCV Workshop on Learning for Computational Imaging (ICCVW)},
+    Month = nov,
+    Title = {Deep Video Deblurring: {T}he Devil is in the Details},
+    Year = {2019}
+}

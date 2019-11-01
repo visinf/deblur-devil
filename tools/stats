@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+
+# Author: Jochen Gast <jochen.gast@visinf.tu-darmstadt.de>
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+import glob
+import json
+import os
+
+KEYS = ['xe', 'psnr', 'cosine_sim', 'total_loss']
+
+
+def format_pair(key, keylen, value, valuelen):
+    key = key.rjust(keylen)
+    if str(value).isdigit():
+        value = str(value).rjust(valuelen)
+    else:
+        value = "%4.2f" % value
+        value = value.rjust(valuelen)
+    return "%s: %s" % (key, value)
+
+
+def main(root):
+    reset = ""
+    cyan = ""
+    green = ""
+
+    try:
+        import colorama
+        reset = colorama.Style.RESET_ALL
+        cyan = colorama.Fore.CYAN
+        green = colorama.Fore.GREEN
+    except Exception:
+        pass
+
+    longest_length = -1
+    subdirs = glob.glob(root)
+    for d in sorted(subdirs):
+        if os.path.isdir(d):
+            longest_length = max(longest_length, len(d))
+
+    for d in sorted(subdirs):
+        if os.path.isdir(d):
+            json_filenames = glob.glob("%s/*checkpoint_best*.json" % d)
+            if len(json_filenames) > 0:
+                json_filename = json_filenames[0]
+                with open(json_filename, 'rb') as file:
+                    data = json.load(file)
+                    try:
+                        data_str = format_pair("epoch", 5, data["epoch"], 3) + " "
+                        for key in sorted(data.keys()):
+                            if key in KEYS:
+                                data_str += "%s" % format_pair(key, 7, data[key], 4)
+                        model = "{}{}{}".format(cyan, d.rjust(longest_length), reset)
+                        arrow = "{}==>{}".format(cyan, reset)
+                        results = "{}{}{}".format(green, data_str, reset)
+                        print('{}  {}  {}'.format(model, arrow, results))
+                    except Exception:
+                        print('Could not read {}'.format(file))
+
+
+if __name__ == "__main__":
+    main("*")

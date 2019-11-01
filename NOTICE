@@ -1,0 +1,58 @@
+Deep Visual Inference
+Copyright 2017-2019 Jochen Gast
+
+
+--------------------------------------------------------------------------------
+
+
+This product includes software developed at
+TU Darmstadt (https://www.tu-darmstadt.de).
+
+
+--------------------------------------------------------------------------------
+
+
+This product includes code from PyTorch
+* Licensed under the BSD License;
+* https://github.com/pytorch/pytorch
+
+
+--------------------------------------------------------------------------------
+
+
+This product includes code from NVIDIA CORPORATION
+* Licensed under the Apache License, Version 2.0;
+* https://github.com/NVIDIA/flownet2-pytorch
+
+
+--------------------------------------------------------------------------------
+
+
+This product includes code from Clément Pinard
+* Licensed under the MIT License;
+* https://github.com/ClementPinard/Pytorch-Correlation-extension
+
+
+--------------------------------------------------------------------------------
+
+
+This product includes code from Anton Backer
+* Licensed under the ISC License;
+* https://github.com/staticshock/colored-traceback.py
+
+
+--------------------------------------------------------------------------------
+
+
+This product includes code from the Python Software Foundation
+* Licensed under the Python Software Foundation License;
+* https://github.com/python/cpython/blob/3.7/Lib/argparse.py
+
+
+--------------------------------------------------------------------------------
+
+
+This product includes code from Liangchen Luo
+* Licensed under the Apache License, Version 2.0;
+* https://github.com/Luolc/AdaBound/blob/master/adabound/adabound.py
+

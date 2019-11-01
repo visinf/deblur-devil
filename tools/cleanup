@@ -1,0 +1,107 @@
+#!/usr/bin/env python
+
+# Author: Jochen Gast <jochen.gast@visinf.tu-darmstadt.de>
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+import argparse
+import csv
+import glob
+import os
+import shutil
+
+reset = ""
+cyan = ""
+green = ""
+white = ""
+style = ""
+dim = ""
+
+try:
+    import colorama
+
+    reset = colorama.Style.RESET_ALL
+    dim = colorama.Style.DIM
+    cyan = colorama.Fore.CYAN
+    green = colorama.Fore.GREEN
+    white = colorama.Fore.WHITE
+except Exception:
+    pass
+
+
+def is_experiment_dir(folder):
+    is_dir = os.path.isdir(folder)
+    has_zipfile = os.path.isfile(os.path.join(folder, 'src.zip'))
+    has_logfile = os.path.isfile(os.path.join(folder, 'logbook.txt'))
+    has_argstxt = os.path.isfile(os.path.join(folder, 'args.txt'))
+    has_argsjsn = os.path.isfile(os.path.join(folder, 'args.json'))
+    is_experiment = all([is_dir, has_zipfile, has_logfile, has_argstxt, has_argsjsn])
+    return is_experiment
+
+
+def print_settings(args):
+    args = vars(args)
+    result = '\n{}Settings were: '.format(green)
+    for key, value in sorted(args.items()):
+        if key == 'delete':
+            result += '{}={}, '.format(key, value)
+        else:
+            result += '{}={}, '.format(key, value)
+    result = result[0:-2] + '.{}'.format(reset)
+    print(result)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--delete", action='store_true', default=False)
+    parser.add_argument("--keep", type=int, default=5)
+    args = parser.parse_args()
+    subdirs = glob.glob('./*')
+    for d in sorted(subdirs):
+        if os.path.isdir(d):
+            delete = False
+            num_epochs = 0
+            is_experiment = is_experiment_dir(d)
+            if is_experiment:
+                csv_dir = os.path.join(d, 'csv')
+                if os.path.exists(csv_dir):
+                    csv_filenames = glob.glob("%s/*losses*.csv" % csv_dir)
+                    if len(csv_filenames) == 0:
+                        delete = True
+                    else:
+                        csv_filename = csv_filenames[0]
+                        with open(csv_filename, 'r') as file:
+                            reader = csv.reader(file, delimiter=',')
+                            num_epochs = len([row for row in reader]) - 1
+                            if num_epochs < args.keep:
+                                delete = True
+                else:
+                    delete = True
+
+            sd = d[2:]
+            if delete:
+                if args.delete:
+                    try:
+                        shutil.rmtree(d)
+                        print('{}Removed{} {}{}{}'.format(dim, reset, cyan, sd, reset))
+                    except Exception:
+                        print("Could not remove {}%s{}".format(cyan, sd, reset))
+                else:
+                    print('{}Would remove{} {}{}{}'.format(dim, reset, cyan, sd, reset))
+            else:
+                if args.delete:
+                    prefix = '{}   Kept{}'.format(dim, reset)
+                else:
+                    prefix = '{}  Would keep{}'.format(dim, reset)
+                if is_experiment:
+                    print('{} {}{}{} {}with {} epochs{}'.format(prefix, cyan, sd, reset, green, num_epochs, reset))
+                else:
+                    print('{} {}{}{} {}(no experiment){}'.format(prefix, cyan, sd, reset, green, reset))
+
+    print_settings(args)
+
+
+if __name__ == "__main__":
+    main()
